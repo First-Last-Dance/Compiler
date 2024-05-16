@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "LinkedList.h"
+#include "Symboltable.h"
+#include "types.h"
 #include "y.tab.h"
 
 /* Function declarations */
@@ -38,6 +39,8 @@ int ex(nodeType *p) {
 	case typeCon: 
 		//{ Integer, Float, Char, String, Bool, ConstIntger, ConstFloat, ConstChar, ConstString, ConstBool} 
 		rightType = p->con.type;
+		printf("\nin con");	
+		
 		
 		// if
 		// (
@@ -49,7 +52,7 @@ int ex(nodeType *p) {
 		// )
 		// {			
 		// 	yyerror("Error: incompatible types for assignment ");
-		// 	//fprintf( f1," Error in type %d \n", p->con.type);
+			//fprintf( f1," Error in type %d \n", p->con.type);
 		// 	break;
 		// }
 		
@@ -76,6 +79,7 @@ int ex(nodeType *p) {
                 yyerror("Error: incompatible types for Boolean assignment ");
                 break;
             }
+		}
 		
 		if ( (leftType == 6 || leftType == 1 ) && ( rightType == 5 || rightType == 0 ))
 		{
@@ -87,6 +91,8 @@ int ex(nodeType *p) {
 		{
 			fprintf( f1, "Warning : Assigning character to string\n");
 		}
+
+		printf("\nin con 2\n");
 		
 		fprintf( f1, "\t mov R%01d, %s \n", last,p->con.value);
 		last ++;
@@ -100,8 +106,9 @@ int ex(nodeType *p) {
     	if (oprType!=NULL && strcmp(oprType,strdup("a")) == 0 )
     	{	
 			int index=(int)p->id.index;
-			struct SymTableData * data= find(index);
-			int init=(int)data->symInit;
+			struct SymbolTableData * data= getSymbolData(p->id.table, p->id.name);
+			int init=(int)data->symbolInitialized;
+			printf("hi");
     		if (init == 0)
     		{
     			fprintf(f1,"\t WARNING: Variable %s is not initialized\n",p->id.name);	
@@ -116,6 +123,7 @@ int ex(nodeType *p) {
 		//for example if identifier is being used in an expression context rather than being assigned
 		else 
     	{
+			printf("hi there");
        		fprintf( f1, "\t mov R%01d, null \n", last);
 			fprintf( f1, "\t mov %s, R%01d \n", p->id.name, last);
 			counter++;
@@ -138,7 +146,7 @@ int ex(nodeType *p) {
 		//*********************EBRACE************************************************************************
 		// for the closing brace of a block ( } )
 		case EBRACE:
-		setBrace(br);
+		// setBrace(br);
 		br--;
 		break;
 		
@@ -255,42 +263,37 @@ int ex(nodeType *p) {
 		break;
 	 //***********************************ASSIGN*******************************************************		
 		case ASSIGN:
+		printf("i am here");
 			leftType = p->opr.op[0]->id.type;
 			oprType = strdup("a");
-			permit = p->opr.op[0]->id.per;
+			// permit = p->opr.op[0]->id.per;
 			// Find the symbol table entry for the variable being assigned to
-			struct SymTableData * data= find(p->opr.op[0]->id.index);
+			struct SymbolTableData * data= getSymbolData(p->opr.op[0]->id.table, p->opr.op[0]->id.name);
 			// Check if the variable is undeclared
-			int init=(int)data->symInit;
-			if(permit == undeclared) 
-			{
-				yyerrorvar("Error: %s is not declared",p->opr.op[0]->id.name);
-				oprType = NULL;
-				break;
-			}
-			else if(permit == Constant && init == 1)
-			{
-				yyerrorvar("Error: %s must be a modifiable expression",p->opr.op[0]->id.name);
-				oprType = NULL;
-				break;
-			}
-			else if(permit == OutOfScope) 
-			{
-				yyerrorvar("Error: %s is already defined",p->opr.op[0]->id.name);
-				oprType = NULL;
-				break;
-			}
+			int init=(int)data->symbolInitialized;
+			// if(permit == undeclared) 
+			// {
+			// 	yyerrorvar("Error: %s is not declared",p->opr.op[0]->id.name);
+			// 	oprType = NULL;
+			// 	break;
+			// }
+			// else if(permit == Constant && init == 1)
+			// {
+			// 	yyerrorvar("Error: %s must be a modifiable expression",p->opr.op[0]->id.name);
+			// 	oprType = NULL;
+			// 	break;
+			// }
+			// else if(permit == OutOfScope) 
+			// {
+			// 	yyerrorvar("Error: %s is already defined",p->opr.op[0]->id.name);
+			// 	oprType = NULL;
+			// 	break;
+			// }
 				
-			setInit(p->opr.op[0]->id.index);
+			// setInit(p->opr.op[0]->id.index);
 			ex(p->opr.op[1]);
-			if(p->opr.op[1]->type == typeId) 
-			{
-				if(p->opr.op[1]->id.per != undeclared)
-				{
-					setUsed(p->opr.op[1]->id.index);
-				}
-                   
-			}
+			printf("left type %d",leftType);
+			printf("right type %d",rightType);
 			// Check compatibility of types between left and right operands
 			if((leftType == Integer || leftType == ConstIntger) && (rightType == Integer || rightType == ConstIntger  )) {;}
 			else if((leftType == Float || leftType == ConstFloat) && (rightType == Float || rightType == ConstFloat || rightType == Integer || rightType == ConstIntger)) {;}
@@ -299,14 +302,33 @@ int ex(nodeType *p) {
 			else if((leftType == Bool || leftType == ConstBool) && (rightType == Bool || rightType == ConstBool || rightType == Integer || rightType == ConstIntger)) {;}
 			else if(leftType != rightType) 
 			{
+				printf("errr");
 				
 				yyerror("Error: incompatible types for assignment ");
 				oprType = NULL;
 				break;
 			}
+
+			if(p->opr.op[1]->type == typeId) 
+			{
+
+				if(p->opr.op[1]->id.node->data->symbolInitialized)
+				{
+					p->opr.op[0]->id.node->data->symbolValue = strdup(p->opr.op[1]->id.node->data->symbolValue);
+				}
+				else{
+					yyerror("Error: Right hand side of assignment is not initialized");
+
+				}
+                   
+			}
+			else{
+				p->opr.op[0]->id.node->data->symbolValue = strdup(p->opr.op[1]->con.value);
+			}
             
 					
 			fprintf( f1, "\t mov %s, R%01d \n", p->opr.op[0]->id.name, last - 1);
+			p->opr.op[0]->id.node->data->symbolInitialized = true;
 			last =0;
 			counter =-1;
             oprType = NULL;
@@ -347,7 +369,7 @@ int ex(nodeType *p) {
         default:
 			oprType = strdup("a");
             if(p->opr.op[0]->type == typeId && p->opr.op[0]->id.per != undeclared)
-			setUsed(p->opr.op[0]->id.index);
+			// setUsed(p->opr.op[0]->id.index);
                     
 			ex(p->opr.op[0]);
 			
@@ -360,7 +382,7 @@ int ex(nodeType *p) {
                 if(p->opr.op[1]->type == typeId && p->opr.op[1]->id.per != undeclared)
 				{
 					oprType = strdup("a");
-					setUsed(p->opr.op[1]->id.index);
+					// setUsed(p->opr.op[1]->id.index);
 				}
                             
 						

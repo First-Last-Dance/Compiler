@@ -6,7 +6,7 @@
 
 nodeType * opr(int oper, int nops, ...);
 nodeType * id(int type, char * name);
-nodeType * getId(char * name);
+nodeType * getId(char * name, SymbolTable * table);
 nodeType * con(char* value, int type);
 void freeNode(nodeType *p);
 void ftoa(float n,char res[], int afterpoint);
@@ -14,10 +14,11 @@ int ex(nodeType *p) ;//phase 2 semantic analyser;
 extern int yyerror(char *);
 extern int yyerrorvar(char *s, char *var);
 extern int yylex(void);
-// int yylineno;
 
 
 extern FILE *yyin;
+FILE *f1;
+FILE *f2;
 extern int yylineno;
 
 int lineIndex = 0;
@@ -69,8 +70,8 @@ program :
     ;
 
 function_declaration : 
-    function_declaration statement  
-    | statement
+    function_declaration statement  {ex($2); freeNode($2);}
+    | statement {ex($1); freeNode($1);}
     ;
         
 datatype :   
@@ -89,8 +90,8 @@ Constant : CONST INT {$$=5;}
         ;
 
 statement : 
-    datatype IDENTIFIER SEMICOLON                {$$=id($1,$2);printf("Declare variable\n");}
-    | IDENTIFIER ASSIGN expression SEMICOLON	          {printf("Assign value\n");}
+    datatype IDENTIFIER SEMICOLON                {$$=id($1,$2);printf("Declare variable\n"); lineIndex++;}
+    | IDENTIFIER ASSIGN expression SEMICOLON	          {$$ = opr(ASSIGN,2, getId($1, symbolTable), $3);printf("Assign value\n"); lineIndex++;}
     /*| datatype IDENTIFIER ASSIGN expression SEMICOLON	      {printf("Declare and initialize variable\n");}
     | Constant datatype IDENTIFIER ASSIGN expression SEMICOLON   {printf("Assign constant value\n");}
     | increment_statement SEMICOLON                             {printf("Increment\n");}
@@ -153,8 +154,8 @@ arithmetic_expression :
     | expression  REM	expression {$$= opr(REM, 2 ,$1,$3);}
     | expression  POWER	expression  {$$= opr(POWER, 2 ,$1,$3);}
     | MINUS expression %prec UMINUS   { $$ = opr(UMINUS, 1, $2); } 
-    | IDENTIFIER INCREMENT                 {$$=opr(INCREMENT,1,getId($1));}
-    | IDENTIFIER DECREMENT                 {$$=opr(DECREMENT,1,getId($1));}
+    | IDENTIFIER INCREMENT                 {$$=opr(INCREMENT,1,getId($1, symbolTable));}
+    | IDENTIFIER DECREMENT                 {$$=opr(DECREMENT,1,getId($1, symbolTable));}
     ;
 
 /* increment_statement: 
@@ -190,7 +191,7 @@ value:
     | FALSE { $$ = con("false", 4); }
     | TRUE { $$ = con("true", 4); }
     | TEXT { $$ = con($1, 3); };
-    | IDENTIFIER { $$ = getId($1); } ;
+    | IDENTIFIER { $$ = getId($1, symbolTable); } ;
 
 expression: 
     value
@@ -240,6 +241,7 @@ nodeType * id(int type, char * name)
         data->symbolValue = NULL;
         data->symbolName = strdup(name);
         data->symbolUsedLinesCount = 0;
+        data->table = symbolTable;
     }
 
     SymbolTableNode *node = malloc(sizeof(SymbolTableNode));
@@ -252,12 +254,15 @@ nodeType * id(int type, char * name)
 
     /* copy information */
     p->type = typeId;
+    p->id.table = symbolTable;
+    p->id.node = node;
+    p->id.name 	= strdup(name);
+
     /* p->id.index = index; */
 
     // dont need these - get them directly from sym table -- leave them for Rana
     /* p->id.type 	= type;
     p->id.per 	= perm;
-    p->id.name 	= strdup(name); */
   
     // insert into symbol table
     /* int init = 0;
@@ -268,11 +273,11 @@ nodeType * id(int type, char * name)
     return p;
 }
 
-nodeType * getId(char * name)
+nodeType * getId(char * name, SymbolTable * table)
 {
 
     nodeType *p;
-    struct SymbolTableData * data = getSymbolData(symbolTable, name);
+    struct SymbolTableNode * node = getSymbolTableNode(symbolTable, name);
     
     /* allocate node */
     if ((p = malloc(sizeof(nodeType))) == NULL)         
@@ -281,8 +286,11 @@ nodeType * getId(char * name)
     /* copy information */
     p->type = typeId;
     
-    p->id.type 	= data->symbolType;
-    p->id.name 	= strdup(data->symbolName);
+    p->id.type 	= node->data->symbolType;
+    p->id.name 	= strdup(node->data->symbolName);
+    p->id.table = table;
+    p->id.node = node;
+
 
     return p;
 	
@@ -378,29 +386,70 @@ void ftoa(float n, char res[], int afterpoint)
 	}
 }
 
-int yyerror(char *s) {  
-    int lineno = ++yylineno;   
-    fprintf(stderr, "Line number : %d %s\n", lineno, s);     
-    return 0; 
+int yyerror(char *s) 
+{ 
+	fclose(f1);
+	remove("output.txt"); 
+	f1=fopen("output.txt","w");
+	fprintf(f1, "Syntax Error Could not parse quadruples\n"); 
+	fprintf(f1, "line number : %d %s\n", yylineno,s);    
+ 
+ 	fclose(f2);
+	remove("symbol.txt");
+	f2 = fopen("symbol.txt","w");
+	fprintf(f2, "Syntax Error was Found\n");
+ 	fprintf(stderr, "line number : %d %s\n", yylineno,s);    
+ 
+	exit(0);
+}
+ 
+int yyerrorvar(char *s, char *var) 
+{
+	fclose(f1);
+	int x = remove("output.txt");
+	f1 = fopen("output.txt","w");
+	fprintf(f1, "Syntax Error Could not parse quadruples\n");
+ 	fprintf(f1, "line number: %d %s : %s\n", yylineno,s,var);
+	
+	fclose(f2);
+	x = remove("symbol.txt");
+	f2 = fopen("symbol.txt","w");
+	fprintf(f2, "Syntax Error was Found\n");
+ 	fprintf(f2, "line number: %d %s : %s\n", yylineno,s,var);
+	
+ 	exit(0);
 }
 
-int main(void) {    
-    yyin = fopen("input.txt", "r");
-
-
+int main(void) 
+{   
+    printf(":()\n");
+	yyin = fopen("input.txt", "r");
+	f1 = fopen("output.txt","w");
+	f2 = fopen("symbol.txt","w");
+    printf(":(\n");
     symbolTable = createSymbolTable();
-    
-    if (!yyparse()) {
-
-        printf("\nParsing complete\n");
-        printList(symbolTable);
-        
-    } else {
-        printf("\nParsing failed\n");
-        return 0;
-    }
-    
-    fclose(yyin);
-    
+	if(!yyparse())
+	{
+		printf("\nParsing complete\n");
+		
+		printList(symbolTable);
+		
+		/* Print(f2); */
+		/* printNotInit(f2); */
+		
+		fprintf(f2,"-----------------------------------------------\n\n");
+	
+		/* printUsed(f2); */
+		/* printNotUsed(f2); */
+		
+	}
+	else
+	{
+		printf("\nParsing failed\n");
+		return 0;
+	}
+	fclose(f1);
+	fclose(f2);
+	fclose(yyin);
     return 0;
 }

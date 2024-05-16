@@ -1,3 +1,4 @@
+#include "SymbolTable.h"
 typedef enum { typeCon, typeId, typeOpr } nodeEnum;
 typedef enum {
   Integer,
@@ -24,7 +25,9 @@ typedef struct {
   int index;     /* subscript to sym table  and brace table*/
   typeEnum type; /* type */
   permission per;
+  SymbolTable *table;
   char *name;
+  SymbolTableNode *node;
 } idNodeType;
 
 /* operators */
@@ -44,7 +47,7 @@ typedef struct nodeTypeTag {
   };
 } nodeType;
 
-// extern FILE *f1;
-// extern FILE *f2;
+extern FILE *f1;
+extern FILE *f2;
 extern int yyerror(char *);
 extern int yyerrorvar(char *s, char *var);
