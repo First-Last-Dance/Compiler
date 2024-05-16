@@ -84,16 +84,16 @@
      CHAR = 300,
      STRING = 301,
      CONST = 302,
-     INTEGERNUMBER = 303,
-     FLOATNUMBER = 304,
-     TEXT = 305,
-     CHARACTER = 306,
-     IDENTIFIER = 307,
-     ASSIGN = 308,
-     POWER = 309,
-     FALSE = 310,
-     TRUE = 311,
-     BOOL = 312,
+     ASSIGN = 303,
+     POWER = 304,
+     FALSE = 305,
+     TRUE = 306,
+     BOOL = 307,
+     INTEGERNUMBER = 308,
+     FLOATNUMBER = 309,
+     TEXT = 310,
+     CHARACTER = 311,
+     IDENTIFIER = 312,
      IFX = 313,
      UMINUS = 314
    };
@@ -144,16 +144,16 @@
 #define CHAR 300
 #define STRING 301
 #define CONST 302
-#define INTEGERNUMBER 303
-#define FLOATNUMBER 304
-#define TEXT 305
-#define CHARACTER 306
-#define IDENTIFIER 307
-#define ASSIGN 308
-#define POWER 309
-#define FALSE 310
-#define TRUE 311
-#define BOOL 312
+#define ASSIGN 303
+#define POWER 304
+#define FALSE 305
+#define TRUE 306
+#define BOOL 307
+#define INTEGERNUMBER 308
+#define FLOATNUMBER 309
+#define TEXT 310
+#define CHARACTER 311
+#define IDENTIFIER 312
 #define IFX 313
 #define UMINUS 314
 
@@ -161,7 +161,24 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 34 "project.y"
+
+    int iValue;                 /* integer value */
+	float fValue;               /* float Value */
+    char * sValue;              /* string value */
+	char * cValue;               /* character value */
+	char * id ;                 /* id value */
+    nodeType *nPtr;             /* node pointer */
+
+
+
+/* Line 1676 of yacc.c  */
+#line 181 "y.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

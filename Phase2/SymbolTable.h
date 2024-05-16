@@ -42,6 +42,8 @@ void printList(SymbolTable *table);
 void setValue(SymbolTable *table, char *name, char *value, int lineIndex); //also set initialized and init line
 void addUsedLine(SymbolTable *table, char *name, int line);
 void freeSymbolTable(SymbolTable *table) ;
+SymbolTableData *getSymbolData(SymbolTable *table, char *name);
+
   // struct SymbolTableData *getSymTableData(int type, int init, int used, int
   // brace,
   //                                         char *name);

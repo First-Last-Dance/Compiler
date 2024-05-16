@@ -166,3 +166,27 @@ void freeSymbolTable(SymbolTable *table) {
     // Free the table itself
     free(table);
 }
+
+// Function to get the data of a symbol
+SymbolTableData *getSymbolData(SymbolTable *table, char *name) {
+    if (table == NULL || name == NULL) {
+        fprintf(stderr, "Error: Invalid parameters\n");
+        return NULL;
+    }
+
+    SymbolTableNode *current = table->head;
+    while (current != NULL) {
+        if (strcmp(current->data->symbolName, name) == 0) {
+            return current->data;
+        }
+        current = current->next;
+    }
+
+    // If the symbol is not found in the current table, check in the parent
+    if (table->parent != NULL) {
+        return getSymbolData(table->parent, name);
+    }
+
+    fprintf(stderr, "Error: Symbol '%s' not found\n", name);
+    return NULL;
+}

@@ -1,11 +1,13 @@
-/* %option noyywrap */
 %{   
 	 #include <stdlib.h>
 	 #include <stdio.h>
-     int yyerror(char *); 
+     int yyerror(char *);
+	 #include "types.h"
 	 #include "y.tab.h" 
+	 #include <string.h>
 	  int yylineno;
 %} 
+
 %%
 \{                      return OBRACE;
 \}                      return EBRACE;
@@ -59,11 +61,26 @@
 "return"                return RET;
 
 
-[0-9]+                  {yylval = atoi(yytext); return INTEGERNUMBER;}
-[0-9]+\.[0-9]+          {yylval = atof(yytext); return FLOATNUMBER;}
-\"[\x23-\x7E =\?!\*()<>+/^%~|&@#;{}.]*\"     	return TEXT;
-\'[\x23-\x7E =\?!\*()<>+/^%~|&@#;{}.]?\'        return CHARACTER;
-[a-zA-Z][_a-zA-Z0-9]*   						return IDENTIFIER; 	
+[0-9]+                  {
+					      yylval.iValue = atoi(yytext);
+						  return INTEGERNUMBER;
+						}
+[0-9]+\.[0-9]+          {
+						  yylval.fValue=atof(yytext);
+						  return FLOATNUMBER;
+						}
+\"[\x23-\x7E]*\"     	{
+						  yylval.sValue=strdup(yytext);
+						  return TEXT;
+						}
+\'[\x23-\x7E]?\'        {
+						  yylval.cValue=strdup(yytext);
+						  return CHARACTER;
+						}
+[a-zA-Z][_a-zA-Z0-9]*   {
+						  yylval.id=strdup(yytext);
+						  return IDENTIFIER;
+						}
 [\t  ]+                /* ignore whitespace */;
 [\n]					{yylineno=yylineno+1;}
 
