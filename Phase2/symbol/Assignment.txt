@@ -1,2 +1,11 @@
------------------------------------------------
+Symbol Table (Block Level: 0)
+  Name: test5, Type: 1, Initialized: Yes, Value: 3.140000
+
+  Name: test4, Type: 3, Initialized: Yes, Value: "Amr"
+
+  Name: test3, Type: 2, Initialized: Yes, Value: 'A'
+
+  Name: test2, Type: 4, Initialized: Yes, Value: false
+
+  Name: test1, Type: 0, Initialized: Yes, Value: 1
 

@@ -1,2 +1,11 @@
------------------------------------------------
+Symbol Table (Block Level: 0)
+  Name: test5, Type: 1, Initialized: No, Value: (none)
+
+  Name: test4, Type: 3, Initialized: No, Value: (none)
+
+  Name: test3, Type: 2, Initialized: No, Value: (none)
+
+  Name: test2, Type: 4, Initialized: No, Value: (none)
+
+  Name: test1, Type: 0, Initialized: No, Value: (none)
 

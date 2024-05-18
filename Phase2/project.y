@@ -100,16 +100,9 @@ statement :
     | FOR ORBRACKET IDENTIFIER ASSIGN INTEGERNUMBER SEMICOLON 
       boolean_expression SEMICOLON 
       for_expression ERBRACKET brace_scope			{char c[] = {}; sprintf(c,"%d",$5);$$ = opr(FOR, 4, opr(ASSIGN, 2, getId($3,symbolTable), con(c, 0)), $7, $9, $11);printf("For loop\n");}
-    /* | FOR ORBRACKET INT IDENTIFIER ASSIGN INTEGERNUMBER SEMICOLON 
-      boolean_expression SEMICOLON 
-      for_expression ERBRACKET brace_scope			{printf("why ?");char c[] = {}; sprintf(c,"%d",$6);$$ = opr(FOR, 4, opr(ASSIGN, 2, id(0, $4), con(c, 0)), $8, $10, $12);printf("For loop\n");} */
     | IF ORBRACKET expression ERBRACKET brace_scope %prec IFX {$$ = opr(IF, 2, $3, $5);printf("If statement\n");}
     | IF ORBRACKET expression ERBRACKET brace_scope ELSE brace_scope	{$$ = opr(IF, 3, $3, $5, $7);printf("If-else statement\n");}
     | SWITCH ORBRACKET IDENTIFIER ERBRACKET switch_scope      {$$ = opr(SWITCH, 2, getId($3,symbolTable), $5);printf("Switch case\n");}
-    /* | PRINT expression 	SEMICOLON	                        {printf("Print\n");} */
-    /* | function_call	     SEMICOLON                                       */
-    /* | RET expression SEMICOLON		{printf("Return value\n");} */
-    /* | RET SEMICOLON		{printf("Return\n");} */
     | function 
     | brace_scope											{printf("New scope\n");} 
     ;
@@ -240,13 +233,9 @@ nodeType * id(int type, char * name)
     SymbolTableData *data = malloc(sizeof(SymbolTableData));
     if (data != NULL) {
         data->symbolType = type;
-        data->symbolInitLine = -1;
         data->symbolInitialized = false;
-        data->symbolUsedLines = NULL;
-        data->symbolBlock = blockLevel;
         data->symbolValue = NULL;
         data->symbolName = strdup(name);
-        data->symbolUsedLinesCount = 0;
         data->table = symbolTable;
     }
 
@@ -258,24 +247,13 @@ nodeType * id(int type, char * name)
 	
     insertFirst(symbolTable, node);
 
-    /* copy information */
     p->type = typeId;
     p->id.table = symbolTable;
     p->id.node = node;
     p->id.name 	= strdup(name);
     p->id.type 	= type;
 
-    /* p->id.index = index; */
 
-    // dont need these - get them directly from sym table -- leave them for Rana
-    /* p->id.type 	= type;
-    p->id.per 	= perm;
-  
-    // insert into symbol table
-    /* int init = 0;
-    int used = 0;
-    struct SymTableData * data1 = getSymTableData(type,init,used,brace,name,perm);
-    insertFirst(index,data1); */
 
     return p;
 }
@@ -442,15 +420,7 @@ int main(int argc, char *argv[])
     {
         printf("\nParsing complete\n");
         
-        printList(symbolTable);
-        
-        /* Print(f2); */
-        /* printNotInit(f2); */
-        
-        fprintf(f2,"-----------------------------------------------\n\n");
-    
-        /* printUsed(f2); */
-        /* printNotUsed(f2); */
+        printListToFile(symbolTable, f2);
         
     }
     else

@@ -38,7 +38,6 @@ void deleteFirst(SymbolTable *table) {
     table->head = temp->next;
     free(temp->data->symbolName);
     free(temp->data->symbolValue);
-    free(temp->data->symbolUsedLines);
     free(temp->data);
     free(temp);
 }
@@ -98,10 +97,6 @@ void printList(SymbolTable *table) {
                current->data->symbolName, current->data->symbolType,
                current->data->symbolInitialized ? "Yes" : "No",
                current->data->symbolValue ? current->data->symbolValue : "(none)");
-        printf("  Used Lines: ");
-        for (int i = 0; i < current->data->symbolUsedLinesCount; i++) {
-            printf("%d ", current->data->symbolUsedLines[i]);
-        }
         printf("\n");
         current = current->next;
     }
@@ -114,7 +109,6 @@ void setValue(SymbolTable *table, char *name, char *value, int lineIndex) {
         if (strcmp(current->data->symbolName, name) == 0) {
             current->data->symbolValue = value;
             current->data->symbolInitialized = true;
-            current->data->symbolInitLine = lineIndex;
             return;
         }
         current = current->next;
@@ -123,20 +117,20 @@ void setValue(SymbolTable *table, char *name, char *value, int lineIndex) {
 }
 
 // Function to add a line number where the symbol is used
-void addUsedLine(SymbolTable *table, char *name, int line) {
-    SymbolTableNode *current = table->head;
-    while (current != NULL) {
-        if (strcmp(current->data->symbolName, name) == 0) {
-            current->data->symbolUsedLinesCount++;
-            current->data->symbolUsedLines = (int *)realloc(current->data->symbolUsedLines,
-                                                             current->data->symbolUsedLinesCount * sizeof(int));
-            current->data->symbolUsedLines[current->data->symbolUsedLinesCount - 1] = line;
-            return;
-        }
-        current = current->next;
-    }
-    fprintf(stderr, "Error: Symbol '%s' not found\n", name);
-}
+// void addUsedLine(SymbolTable *table, char *name, int line) {
+//     SymbolTableNode *current = table->head;
+//     while (current != NULL) {
+//         if (strcmp(current->data->symbolName, name) == 0) {
+//             current->data->symbolUsedLinesCount++;
+//             current->data->symbolUsedLines = (int *)realloc(current->data->symbolUsedLines,
+//                                                              current->data->symbolUsedLinesCount * sizeof(int));
+//             current->data->symbolUsedLines[current->data->symbolUsedLinesCount - 1] = line;
+//             return;
+//         }
+//         current = current->next;
+//     }
+//     fprintf(stderr, "Error: Symbol '%s' not found\n", name);
+// }
 
 
 // Function to free all memory allocated for the symbol table
@@ -158,7 +152,6 @@ void freeSymbolTable(SymbolTable *table) {
         current = current->next;
         free(temp->data->symbolName);
         free(temp->data->symbolValue);
-        free(temp->data->symbolUsedLines);
         free(temp->data);
         free(temp);
     }
@@ -213,4 +206,17 @@ SymbolTableNode *getSymbolTableNode(SymbolTable *table, char *name){
 
     fprintf(stderr, "Error: Symbol '%s' not found\n", name);
     return NULL;
+}
+
+void printListToFile(SymbolTable *table, FILE *f1) {
+    SymbolTableNode *current = table->head;
+    fprintf(f1, "Symbol Table (Block Level: %d)\n", table->blockLevel);
+    while (current != NULL) {
+        fprintf(f1, "  Name: %s, Type: %d, Initialized: %s, Value: %s\n",
+               current->data->symbolName, current->data->symbolType,
+               current->data->symbolInitialized ? "Yes" : "No",
+               current->data->symbolValue ? current->data->symbolValue : "(none)");
+        fprintf(f1, "\n");
+        current = current->next;
+    }
 }

@@ -1,2 +1,3 @@
------------------------------------------------
+Symbol Table (Block Level: 0)
+  Name: test, Type: 4, Initialized: Yes, Value: false
 

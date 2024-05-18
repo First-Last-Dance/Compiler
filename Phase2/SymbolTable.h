@@ -12,13 +12,13 @@ typedef struct SymbolTable SymbolTable;
 
 typedef struct SymbolTableData {
   int symbolType;
-  int symbolInitLine;
+  // int symbolInitLine;
   bool symbolInitialized;
-  int *symbolUsedLines;
-  int symbolBlock;
+  // int *symbolUsedLines;
+  // int symbolBlock;
   char *symbolValue;
   char *symbolName;
-  int symbolUsedLinesCount;
+  // int symbolUsedLinesCount;
   SymbolTable *table;
   //   permission symPerm;
 
@@ -44,33 +44,13 @@ SymbolTable * deleteChild(SymbolTable *table); // returns the parent
 SymbolTable *getParent(SymbolTable *table);
 void printList(SymbolTable *table);
 void setValue(SymbolTable *table, char *name, char *value, int lineIndex); //also set initialized and init line
-void addUsedLine(SymbolTable *table, char *name, int line);
+// void addUsedLine(SymbolTable *table, char *name, int line);
 void freeSymbolTable(SymbolTable *table) ;
 SymbolTableData *getSymbolData(SymbolTable *table, char *name);
 SymbolTableNode *getSymbolTableNode(SymbolTable *table, char *name);
 
-// void setValueByNode(char *value, int lineIndex); //also set initialized and init line
+void printListToFile(SymbolTable *table, FILE *f1);
 
-
-  // struct SymbolTableData *getSymTableData(int type, int init, int used, int
-  // brace,
-  //                                         char *name);
-  // void insert(int index, struct SymbolTableData *data);
-  // struct SymbolTableNode *deleteFirst();
-  // int length();
-  // bool isEmpty();
-  // struct SymbolTableData *find(int index);
-  // void printList();
-  // void setValue(int index, char *value);
-  // void setBrace(int findBrace);
-  // void setUsed(int findIndex);
-  // void setInit(int findIndex);
-  // void printUsed(FILE *f);
-  // void printNotUsed(FILE *f);
-  // void printInit(FILE *f);
-  // void printNotInit(FILE *f);
-  // bool nameUniqueInScope(char *name, int brace);
-  // int getIndex(char *name, int brace);
 
 #endif // SYMBOL_TABLE_H
 

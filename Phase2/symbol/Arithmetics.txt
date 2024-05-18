@@ -1,2 +1,3 @@
------------------------------------------------
+Symbol Table (Block Level: 0)
+  Name: index, Type: 0, Initialized: Yes, Value: 2
 

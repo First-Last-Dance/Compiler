@@ -606,13 +606,13 @@ static const yytype_uint8 yyrline[] =
 {
        0,    69,    69,    73,    74,    78,    79,    80,    81,    82,
       85,    86,    87,    88,    89,    93,    94,    95,    96,    97,
-      98,    99,   100,   106,   107,   108,   113,   114,   118,   119,
-     127,   128,   132,   133,   138,   139,   142,   143,   146,   150,
-     151,   155,   156,   157,   158,   159,   160,   161,   162,   163,
-     167,   168,   169,   170,   171,   172,   177,   178,   181,   182,
-     183,   184,   185,   186,   187,   188,   189,   193,   194,   195,
-     196,   197,   198,   199,   202,   203,   204,   206,   209,   210,
-     211
+      98,    99,   100,   103,   104,   105,   106,   107,   111,   112,
+     120,   121,   125,   126,   131,   132,   135,   136,   139,   143,
+     144,   148,   149,   150,   151,   152,   153,   154,   155,   156,
+     160,   161,   162,   163,   164,   165,   170,   171,   174,   175,
+     176,   177,   178,   179,   180,   181,   182,   186,   187,   188,
+     189,   190,   191,   192,   195,   196,   197,   199,   202,   203,
+     204
 };
 #endif
 
@@ -1850,357 +1850,357 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 106 "project.y"
+#line 103 "project.y"
     {(yyval.nPtr) = opr(IF, 2, (yyvsp[(3) - (5)].nPtr), (yyvsp[(5) - (5)].nPtr));printf("If statement\n");}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 107 "project.y"
+#line 104 "project.y"
     {(yyval.nPtr) = opr(IF, 3, (yyvsp[(3) - (7)].nPtr), (yyvsp[(5) - (7)].nPtr), (yyvsp[(7) - (7)].nPtr));printf("If-else statement\n");}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 108 "project.y"
+#line 105 "project.y"
     {(yyval.nPtr) = opr(SWITCH, 2, getId((yyvsp[(3) - (5)].id),symbolTable), (yyvsp[(5) - (5)].nPtr));printf("Switch case\n");}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 114 "project.y"
+#line 107 "project.y"
     {printf("New scope\n");}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 118 "project.y"
+#line 111 "project.y"
     { char c[] = {}; sprintf(c,"%d",(yyvsp[(1) - (11)].iValue));  (yyval.nPtr)=opr( RET,3,con(c ,0),(yyvsp[(7) - (11)].nPtr),(yyvsp[(9) - (11)].nPtr) ); printf("function\n");printf("Define function\n");}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 119 "project.y"
+#line 112 "project.y"
     { char c[] = {}; sprintf(c,"%d",(yyvsp[(1) - (10)].iValue));  (yyval.nPtr)=opr( RET,3,con(c ,0),(yyvsp[(6) - (10)].nPtr),(yyvsp[(8) - (10)].nPtr) );printf("Define function\n");}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 138 "project.y"
+#line 131 "project.y"
     {(yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); printf("Block of statements\n");}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 142 "project.y"
+#line 135 "project.y"
     {blockLevel++ ;symbolTable = createChild(symbolTable); printf("Block %d\n", blockLevel);}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 143 "project.y"
+#line 136 "project.y"
     {printf("End of block %d\n", blockLevel); symbolTable = deleteChild(symbolTable);  blockLevel--;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 146 "project.y"
+#line 139 "project.y"
     {(yyval.nPtr) = (yyvsp[(2) - (3)].nPtr);printf("Switch case block\n");}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 151 "project.y"
+#line 144 "project.y"
     { (yyval.nPtr) = opr(SEMICOLON, 2, (yyvsp[(1) - (2)].nPtr), (yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 155 "project.y"
+#line 148 "project.y"
     {(yyval.nPtr) = opr(PLUS, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 156 "project.y"
+#line 149 "project.y"
     {(yyval.nPtr)= opr(MINUS,2,(yyvsp[(1) - (3)].nPtr),(yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 157 "project.y"
+#line 150 "project.y"
     {(yyval.nPtr)= opr(MUL, 2 ,(yyvsp[(1) - (3)].nPtr),(yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 158 "project.y"
+#line 151 "project.y"
     {(yyval.nPtr)= opr(DIV, 2 ,(yyvsp[(1) - (3)].nPtr),(yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 159 "project.y"
+#line 152 "project.y"
     {(yyval.nPtr)= opr(REM, 2 ,(yyvsp[(1) - (3)].nPtr),(yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 160 "project.y"
+#line 153 "project.y"
     {(yyval.nPtr)= opr(POWER, 2 ,(yyvsp[(1) - (3)].nPtr),(yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 161 "project.y"
+#line 154 "project.y"
     { (yyval.nPtr) = opr(UMINUS, 1, (yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 162 "project.y"
+#line 155 "project.y"
     {(yyval.nPtr)=opr(INCREMENT,1,getId((yyvsp[(1) - (2)].id), symbolTable));}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 163 "project.y"
+#line 156 "project.y"
     {(yyval.nPtr)=opr(DECREMENT,1,getId((yyvsp[(1) - (2)].id), symbolTable));}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 167 "project.y"
+#line 160 "project.y"
     {(yyval.nPtr)=opr(INCREMENT,1,getId((yyvsp[(1) - (2)].id), symbolTable));}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 168 "project.y"
+#line 161 "project.y"
     {(yyval.nPtr)=opr(DECREMENT,1,getId((yyvsp[(1) - (2)].id), symbolTable));}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 169 "project.y"
+#line 162 "project.y"
     { (yyval.nPtr) = opr(ASSIGN, 2,getId((yyvsp[(1) - (3)].id), symbolTable), opr(PLUS, 2, getId((yyvsp[(1) - (3)].id), symbolTable), (yyvsp[(3) - (3)].nPtr))); }
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 170 "project.y"
+#line 163 "project.y"
     { (yyval.nPtr) = opr(ASSIGN, 2,getId((yyvsp[(1) - (3)].id), symbolTable), opr(MINUS, 2, getId((yyvsp[(1) - (3)].id), symbolTable), (yyvsp[(3) - (3)].nPtr))); }
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 171 "project.y"
+#line 164 "project.y"
     { (yyval.nPtr) = opr(ASSIGN, 2,getId((yyvsp[(1) - (3)].id), symbolTable), opr(MUL, 2, getId((yyvsp[(1) - (3)].id), symbolTable), (yyvsp[(3) - (3)].nPtr))); }
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 172 "project.y"
+#line 165 "project.y"
     { (yyval.nPtr) = opr(ASSIGN, 2,getId((yyvsp[(1) - (3)].id), symbolTable), opr(DIV, 2, getId((yyvsp[(1) - (3)].id), symbolTable), (yyvsp[(3) - (3)].nPtr))); }
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 177 "project.y"
+#line 170 "project.y"
     {(yyval.nPtr)=(yyvsp[(1) - (1)].nPtr);}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 178 "project.y"
+#line 171 "project.y"
     {(yyval.nPtr) = opr(ASSIGN, 2, getId((yyvsp[(1) - (3)].id),symbolTable), (yyvsp[(3) - (3)].nPtr));}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 181 "project.y"
+#line 174 "project.y"
     { (yyval.nPtr) = opr(AND, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 182 "project.y"
+#line 175 "project.y"
     { (yyval.nPtr) = opr(OR , 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 183 "project.y"
+#line 176 "project.y"
     { (yyval.nPtr) = opr(NOT, 1, (yyvsp[(2) - (2)].nPtr)); }
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 184 "project.y"
+#line 177 "project.y"
     { (yyval.nPtr) = opr(GREATER, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 185 "project.y"
+#line 178 "project.y"
     { (yyval.nPtr) = opr(LESS, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 186 "project.y"
+#line 179 "project.y"
     { (yyval.nPtr) = opr(GE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 187 "project.y"
+#line 180 "project.y"
     { (yyval.nPtr) = opr(LE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 188 "project.y"
+#line 181 "project.y"
     { (yyval.nPtr) = opr(NE, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 189 "project.y"
+#line 182 "project.y"
     { (yyval.nPtr) = opr(EQ, 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); }
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 193 "project.y"
+#line 186 "project.y"
     { char c[] = {}; ftoa((yyvsp[(1) - (1)].fValue), c, 6); (yyval.nPtr) = con(c, 1); }
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 194 "project.y"
+#line 187 "project.y"
     { char c[] = {};sprintf(c,"%d",(yyvsp[(1) - (1)].iValue)); (yyval.nPtr) = con(c, 0); printf("Integer\n");}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 195 "project.y"
+#line 188 "project.y"
     { (yyval.nPtr) = con((yyvsp[(1) - (1)].cValue), 2); }
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 196 "project.y"
+#line 189 "project.y"
     { (yyval.nPtr) = con("false", 4); }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 197 "project.y"
+#line 190 "project.y"
     { (yyval.nPtr) = con("true", 4); }
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 198 "project.y"
+#line 191 "project.y"
     { (yyval.nPtr) = con((yyvsp[(1) - (1)].sValue), 3); }
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 199 "project.y"
+#line 192 "project.y"
     { (yyval.nPtr) = getId((yyvsp[(1) - (1)].id), symbolTable); }
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 202 "project.y"
+#line 195 "project.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr);}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 203 "project.y"
+#line 196 "project.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); }
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 204 "project.y"
+#line 197 "project.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); }
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 206 "project.y"
+#line 199 "project.y"
     { (yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); }
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 209 "project.y"
+#line 202 "project.y"
     { (yyval.nPtr) = opr(DEFAULT, 2, (yyvsp[(3) - (5)].nPtr), opr(BREAK, 0)); }
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 210 "project.y"
+#line 203 "project.y"
     { char c[] = {}; sprintf(c,"%d",(yyvsp[(2) - (7)].iValue)); (yyval.nPtr) = opr(CASE, 4, con(c, 0), (yyvsp[(4) - (7)].nPtr), opr(BREAK, 0), (yyvsp[(7) - (7)].nPtr)); }
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 211 "project.y"
+#line 204 "project.y"
     { char c[] = {}; sprintf(c,"%d",(yyvsp[(2) - (5)].iValue)); (yyval.nPtr) = opr(CASE, 3, con(c, 0), (yyvsp[(4) - (5)].nPtr), (yyvsp[(5) - (5)].nPtr)); }
     break;
 
@@ -2419,7 +2419,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 214 "project.y"
+#line 207 "project.y"
  
 
 nodeType *con(char* value, int type) 
@@ -2449,13 +2449,9 @@ nodeType * id(int type, char * name)
     SymbolTableData *data = malloc(sizeof(SymbolTableData));
     if (data != NULL) {
         data->symbolType = type;
-        data->symbolInitLine = -1;
         data->symbolInitialized = false;
-        data->symbolUsedLines = NULL;
-        data->symbolBlock = blockLevel;
         data->symbolValue = NULL;
         data->symbolName = strdup(name);
-        data->symbolUsedLinesCount = 0;
         data->table = symbolTable;
     }
 
@@ -2467,24 +2463,13 @@ nodeType * id(int type, char * name)
 	
     insertFirst(symbolTable, node);
 
-    /* copy information */
     p->type = typeId;
     p->id.table = symbolTable;
     p->id.node = node;
     p->id.name 	= strdup(name);
     p->id.type 	= type;
 
-    /* p->id.index = index; */
 
-    // dont need these - get them directly from sym table -- leave them for Rana
-    /* p->id.type 	= type;
-    p->id.per 	= perm;
-  
-    // insert into symbol table
-    /* int init = 0;
-    int used = 0;
-    struct SymTableData * data1 = getSymTableData(type,init,used,brace,name,perm);
-    insertFirst(index,data1); */
 
     return p;
 }
@@ -2651,15 +2636,7 @@ int main(int argc, char *argv[])
     {
         printf("\nParsing complete\n");
         
-        printList(symbolTable);
-        
-        /* Print(f2); */
-        /* printNotInit(f2); */
-        
-        fprintf(f2,"-----------------------------------------------\n\n");
-    
-        /* printUsed(f2); */
-        /* printNotUsed(f2); */
+        printListToFile(symbolTable, f2);
         
     }
     else
