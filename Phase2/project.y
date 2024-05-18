@@ -111,7 +111,7 @@ statement :
     /* | RET expression SEMICOLON		{printf("Return value\n");} */
     /* | RET SEMICOLON		{printf("Return\n");} */
     | function 
-    /* | brace_scope											{printf("New scope\n");}  */
+    | brace_scope											{printf("New scope\n");} 
     ;
 
  function : 
@@ -139,8 +139,8 @@ brace_scope:
     | OpeningBRACE ClosingBRACE	
     ;
 
-OpeningBRACE: OBRACE {blockLevel++; printf("Block %d\n", blockLevel);};
-ClosingBRACE: EBRACE {printf("End of block %d\n", blockLevel); blockLevel--;};
+OpeningBRACE: OBRACE {blockLevel++ ;symbolTable = createChild(symbolTable); printf("Block %d\n", blockLevel);};
+ClosingBRACE: EBRACE {printf("End of block %d\n", blockLevel); symbolTable = deleteChild(symbolTable);  blockLevel--;};
 
 switch_scope:  
     OpeningBRACE case_expression ClosingBRACE	    {$$ = $2;printf("Switch case block\n");}		
@@ -413,13 +413,13 @@ int yyerror(char *s)
 int yyerrorvar(char *s, char *var) 
 {
 	fclose(f1);
-	int x = remove("output.txt");
+	remove("output.txt");
 	f1 = fopen("output.txt","w");
 	fprintf(f1, "Syntax Error Could not parse quadruples\n");
  	fprintf(f1, "line number: %d %s : %s\n", yylineno,s,var);
 	
 	fclose(f2);
-	x = remove("symbol.txt");
+	remove("symbol.txt");
 	f2 = fopen("symbol.txt","w");
 	fprintf(f2, "Syntax Error was Found\n");
  	fprintf(f2, "line number: %d %s : %s\n", yylineno,s,var);

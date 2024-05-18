@@ -55,7 +55,7 @@ SymbolTable *createChild(SymbolTable *table) {
         return NULL;
     }
     table->children[table->blockLevel] = child;
-    table->blockLevel++;
+    child->blockLevel++;
     return child;
 }
 
@@ -63,24 +63,24 @@ SymbolTable *createChild(SymbolTable *table) {
 SymbolTable *deleteChild(SymbolTable *table) {
     if (table->blockLevel == 0) {
         fprintf(stderr, "Error: Cannot delete root symbol table\n");
-        return NULL;
+        return table;
     }
-    table->blockLevel--;
+    // table->blockLevel--;
     SymbolTable *parent = table->parent;
-    int numChildren = table->parent->blockLevel + 1;
-    SymbolTableNode *current = table->head;
-    while (current != NULL) {
-        // Free memory associated with symbols in the child table
-        free(current->data->symbolName);
-        free(current->data->symbolValue);
-        free(current->data->symbolUsedLines);
-        free(current->data);
-        SymbolTableNode *temp = current;
-        current = current->next;
-        free(temp);
-    }
-    free(table->children);
-    free(table);
+    // int numChildren = table->parent->blockLevel + 1;
+    // SymbolTableNode *current = table->head;
+    // while (current != NULL) {
+    //     // Free memory associated with symbols in the child table
+    //     free(current->data->symbolName);
+    //     free(current->data->symbolValue);
+    //     free(current->data->symbolUsedLines);
+    //     free(current->data);
+    //     SymbolTableNode *temp = current;
+    //     current = current->next;
+    //     free(temp);
+    // }
+    // free(table->children);
+    // free(table);
     return parent;
 }
 

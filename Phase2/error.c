@@ -264,6 +264,7 @@ int ex(nodeType *p) {
 		break;
 	 //***********************************ASSIGN*******************************************************		
 		case ASSIGN:
+			printf("lol");
 			leftType = p->opr.op[0]->id.type;
 			oprType = strdup("a");
 			// permit = p->opr.op[0]->id.per;
@@ -277,12 +278,15 @@ int ex(nodeType *p) {
 			// 	oprType = NULL;
 			// 	break;
 			// }
-			// else if(permit == Constant && init == 1)
-			// {
-			// 	yyerrorvar("Error: %s must be a modifiable expression",p->opr.op[0]->id.name);
-			// 	oprType = NULL;
-			// 	break;
-			// }
+			if(p->opr.op[0]->id.node->data->symbolInitialized == true){
+				if(p->opr.op[0]->id.node->data->symbolType == ConstIntger || p->opr.op[0]->id.node->data->symbolType == ConstFloat || p->opr.op[0]->id.node->data->symbolType == ConstChar || p->opr.op[0]->id.node->data->symbolType == ConstString || p->opr.op[0]->id.node->data->symbolType == ConstBool)
+				{
+					printf("Error: left operands must be a modifiable expression");
+					yyerror("Error: left operands must be a modifiable expression");
+					oprType = NULL;
+					break;
+				}
+			}
 			// else if(permit == OutOfScope) 
 			// {
 			// 	yyerrorvar("Error: %s is already defined",p->opr.op[0]->id.name);
@@ -322,6 +326,7 @@ int ex(nodeType *p) {
 				p->opr.op[0]->id.node->data->symbolValue = strdup(p->opr.op[1]->con.value);
 			}
             
+				p->opr.op[0]->id.node->data->symbolInitialized = true;
 					
 			fprintf( f1, "\t mov %s, R%01d \n", p->opr.op[0]->id.name, last - 1);
 			p->opr.op[0]->id.node->data->symbolInitialized = true;

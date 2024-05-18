@@ -1,0 +1,4 @@
+	 mov R0, 1 
+	 mov x, R0 
+	 mov R0, false 
+	 mov flag, R0 

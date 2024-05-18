@@ -1,0 +1,4 @@
+const int x = 1;
+const bool flag = false;
+
+flag = true;
