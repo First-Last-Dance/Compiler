@@ -1,0 +1,26 @@
+	 mov R0, null 
+	 mov i, R0 
+	 mov R0, 5 
+	 mov i, R0 
+L000:
+	 mov R0,i 
+	 mov R1, 10 
+	 compLESS R2, R0, R1 
+	 jnz	L001
+	 mov R3, false 
+	 mov flag, R3 
+	 mov R0,flag 
+	 not R0 
+	jz	L002
+	 mov R1, 10 
+	 mov x, R1 
+	jmp	L003
+L002:
+	 mov R0, 15 
+	 mov x, R0 
+L003:
+	 mov R0,i 
+	 inc R0 
+	 mov i, R0 
+	 jmp	L000
+L001:

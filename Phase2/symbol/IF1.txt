@@ -1,7 +1,7 @@
 Symbol Table (Block Level: 0)
   Name: z, Type: 0, Initialized: Yes, Value: 10
-
   Name: y, Type: 0, Initialized: Yes, Value: 2
-
   Name: x, Type: 0, Initialized: Yes, Value: 6
+
+Symbol Table (Block Level: 1)
 

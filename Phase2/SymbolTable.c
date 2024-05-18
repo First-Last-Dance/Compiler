@@ -9,6 +9,7 @@ SymbolTable *createSymbolTable() {
     }
     table->head = NULL;
     table->blockLevel = 0;
+    table->numOfChildren = 0; // Initialize numOfChildren to 0
     table->children = NULL;
     table->parent = NULL;
     return table;
@@ -46,15 +47,16 @@ void deleteFirst(SymbolTable *table) {
 SymbolTable *createChild(SymbolTable *table) {
     SymbolTable *child = createSymbolTable();
     child->parent = table;
-    int numChildren = table->children ? table->blockLevel + 1 : 1;
-    table->children = (SymbolTable **)realloc(table->children, sizeof(SymbolTable *) * numChildren);
+    child->blockLevel = table->blockLevel + 1; // Set child's block level to parent's block level + 1
+
+    table->numOfChildren++; // Increment the number of children
+    table->children = (SymbolTable **)realloc(table->children, sizeof(SymbolTable *) * table->numOfChildren);
     if (table->children == NULL) {
         fprintf(stderr, "Error allocating memory for child symbol tables\n");
         free(child);
         return NULL;
     }
-    table->children[table->blockLevel] = child;
-    child->blockLevel++;
+    table->children[table->numOfChildren - 1] = child;
     return child;
 }
 
@@ -64,22 +66,7 @@ SymbolTable *deleteChild(SymbolTable *table) {
         fprintf(stderr, "Error: Cannot delete root symbol table\n");
         return table;
     }
-    // table->blockLevel--;
     SymbolTable *parent = table->parent;
-    // int numChildren = table->parent->blockLevel + 1;
-    // SymbolTableNode *current = table->head;
-    // while (current != NULL) {
-    //     // Free memory associated with symbols in the child table
-    //     free(current->data->symbolName);
-    //     free(current->data->symbolValue);
-    //     free(current->data->symbolUsedLines);
-    //     free(current->data);
-    //     SymbolTableNode *temp = current;
-    //     current = current->next;
-    //     free(temp);
-    // }
-    // free(table->children);
-    // free(table);
     return parent;
 }
 
@@ -97,8 +84,13 @@ void printList(SymbolTable *table) {
                current->data->symbolName, current->data->symbolType,
                current->data->symbolInitialized ? "Yes" : "No",
                current->data->symbolValue ? current->data->symbolValue : "(none)");
-        printf("\n");
         current = current->next;
+    }
+    printf("\n");
+
+    // Recursively print children
+    for (int i = 0; i < table->numOfChildren; i++) {
+        printList(table->children[i]);
     }
 }
 
@@ -116,23 +108,6 @@ void setValue(SymbolTable *table, char *name, char *value, int lineIndex) {
     fprintf(stderr, "Error: Symbol '%s' not found\n", name);
 }
 
-// Function to add a line number where the symbol is used
-// void addUsedLine(SymbolTable *table, char *name, int line) {
-//     SymbolTableNode *current = table->head;
-//     while (current != NULL) {
-//         if (strcmp(current->data->symbolName, name) == 0) {
-//             current->data->symbolUsedLinesCount++;
-//             current->data->symbolUsedLines = (int *)realloc(current->data->symbolUsedLines,
-//                                                              current->data->symbolUsedLinesCount * sizeof(int));
-//             current->data->symbolUsedLines[current->data->symbolUsedLinesCount - 1] = line;
-//             return;
-//         }
-//         current = current->next;
-//     }
-//     fprintf(stderr, "Error: Symbol '%s' not found\n", name);
-// }
-
-
 // Function to free all memory allocated for the symbol table
 void freeSymbolTable(SymbolTable *table) {
     if (table == NULL) {
@@ -140,7 +115,7 @@ void freeSymbolTable(SymbolTable *table) {
     }
 
     // Free child tables recursively
-    for (int i = 0; i < table->blockLevel; i++) {
+    for (int i = 0; i < table->numOfChildren; i++) {
         freeSymbolTable(table->children[i]);
     }
     free(table->children);
@@ -208,6 +183,7 @@ SymbolTableNode *getSymbolTableNode(SymbolTable *table, char *name){
     return NULL;
 }
 
+// Function to print the symbol table to a file
 void printListToFile(SymbolTable *table, FILE *f1) {
     SymbolTableNode *current = table->head;
     fprintf(f1, "Symbol Table (Block Level: %d)\n", table->blockLevel);
@@ -216,7 +192,12 @@ void printListToFile(SymbolTable *table, FILE *f1) {
                current->data->symbolName, current->data->symbolType,
                current->data->symbolInitialized ? "Yes" : "No",
                current->data->symbolValue ? current->data->symbolValue : "(none)");
-        fprintf(f1, "\n");
         current = current->next;
+    }
+    fprintf(f1, "\n");
+
+    // Recursively print children
+    for (int i = 0; i < table->numOfChildren; i++) {
+        printListToFile(table->children[i], f1);
     }
 }

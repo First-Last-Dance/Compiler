@@ -1,7 +1,9 @@
 Symbol Table (Block Level: 0)
   Name: a, Type: 0, Initialized: Yes, Value: 11
-
   Name: c, Type: 0, Initialized: Yes, Value: 5
-
   Name: x, Type: 4, Initialized: Yes, Value: true
+
+Symbol Table (Block Level: 1)
+
+Symbol Table (Block Level: 2)
 

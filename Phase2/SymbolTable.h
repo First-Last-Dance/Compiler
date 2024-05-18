@@ -34,6 +34,7 @@ typedef struct SymbolTable {
   int blockLevel;
   SymbolTable **children;
   SymbolTable *parent;
+  int numOfChildren;
 } SymbolTable;
 
 SymbolTable *createSymbolTable();

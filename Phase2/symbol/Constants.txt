@@ -1,5 +1,4 @@
 Symbol Table (Block Level: 0)
   Name: flag, Type: 9, Initialized: Yes, Value: false
-
   Name: x, Type: 5, Initialized: Yes, Value: 1
 
