@@ -1,0 +1,18 @@
+	 mov R0, false 
+	 mov test, R0 
+	 mov R0, true 
+	 mov R1, true 
+	 and R2, R0, R1 
+	 mov test, R2 
+	 mov R0, false 
+	 mov R1, true 
+	 or R2, R0, R1 
+	 mov test, R2 
+	 mov R0,test 
+	 not R0 
+	 mov test, R0 
+	 mov R0,test 
+	 not R0 
+	 mov R1,test 
+	 and R2, R0, R1 
+	 mov test, R2 

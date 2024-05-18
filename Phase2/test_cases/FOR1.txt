@@ -1,0 +1,16 @@
+int i;
+for(i=5;i<10;i++)
+{
+    bool flag=false;
+    int x = 1;
+    if(x > 2)
+    {
+        flag=true;
+        x++;
+    }
+    else
+    {
+        flag=false;
+        x--;
+    }
+}

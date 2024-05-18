@@ -1,0 +1,11 @@
+bool x=true;
+int c = 5;
+int a= 10;
+while(x && (c > 3))
+{
+    c=c*2;
+    if  ( c <= a)
+    {
+        a++;
+    }
+}

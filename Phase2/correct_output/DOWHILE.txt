@@ -1,0 +1,25 @@
+	 mov R0, true 
+	 mov x, R0 
+	 mov R0, 5 
+	 mov c, R0 
+	 mov R0, 10 
+	 mov a, R0 
+L000:
+	 mov R0,c 
+	 mov R1, 2 
+	 mul R2, R0, R1 
+	 mov c, R2 
+	 mov R0,c 
+	 mov R1,a 
+	 compLE R2, R0, R1 
+	jz	L001
+	 mov R3,a 
+	 inc R3 
+	 mov a, R3 
+L001:
+	 mov R4,x 
+	 mov R5,c 
+	 mov R6, 3 
+	 compGREATER R7, R5, R6 
+	 and R8, R4, R7 
+	 jnz	L000

@@ -59,7 +59,7 @@ SymbolTable* symbolTable;
 
 
 /* %type <nPtr> function_declaration function function_call argument_list statement continuation OpeningBRACE expression statement_list brace_scope for_expression boolean_expression case_expression  ClosingBRACE arithmetic_expression increment_statement value */
-%type <nPtr> function_declaration statement OpeningBRACE expression statement_list boolean_expression ClosingBRACE arithmetic_expression value
+%type <nPtr> function_declaration statement OpeningBRACE expression statement_list boolean_expression ClosingBRACE arithmetic_expression value increment_statement brace_scope for_expression case_expression switch_scope function
 %type <iValue> datatype
 %type <iValue> Constant
 
@@ -92,58 +92,63 @@ Constant : CONST INT {$$=5;}
 statement : 
     datatype IDENTIFIER SEMICOLON                {$$=id($1,$2);printf("Declare variable\n"); lineIndex++;}
     | IDENTIFIER ASSIGN expression SEMICOLON	          {$$ = opr(ASSIGN,2, getId($1, symbolTable), $3);printf("Assign value\n"); lineIndex++;}
-    /*| datatype IDENTIFIER ASSIGN expression SEMICOLON	      {printf("Declare and initialize variable\n");}
-    | Constant datatype IDENTIFIER ASSIGN expression SEMICOLON   {printf("Assign constant value\n");}
-    | increment_statement SEMICOLON                             {printf("Increment\n");}
-    | WHILE ORBRACKET expression ERBRACKET statement	  {printf("While loop\n");}
-    | DO brace_scope WHILE ORBRACKET expression ERBRACKET SEMICOLON	{printf("Do-while loop\n");}
-    | FOR ORBRACKET INT IDENTIFIER ASSIGN INTEGERNUMBER SEMICOLON 
+    | datatype IDENTIFIER ASSIGN expression SEMICOLON	      {$$ = opr(ASSIGN,2, id($1,$2), $4);lineIndex++;printf("Declare and initialize variable\n");}
+    | Constant IDENTIFIER ASSIGN expression SEMICOLON   {$$ = opr(ASSIGN,2, id($1,$2), $4);printf("Assign constant value\n");}
+    | increment_statement SEMICOLON                             {$$=$1; printf("Increment\n"); lineIndex++;}
+    | WHILE ORBRACKET expression ERBRACKET brace_scope	  {$$ = opr(WHILE,2, $3, $5);printf("While loop\n");}
+    | DO brace_scope WHILE ORBRACKET expression ERBRACKET SEMICOLON	{$$ = opr(DO,2, $2, $5);printf("Do-while loop\n");}
+    | FOR ORBRACKET IDENTIFIER ASSIGN INTEGERNUMBER SEMICOLON 
       boolean_expression SEMICOLON 
-      for_expression ERBRACKET
-      brace_scope											  {printf("For loop\n");}
-    | IF ORBRACKET expression ERBRACKET brace_scope %prec IFX {printf("If statement\n");}
-    | IF ORBRACKET expression ERBRACKET brace_scope ELSE brace_scope	{printf("If-else statement\n");}
-    | SWITCH ORBRACKET IDENTIFIER ERBRACKET switch_scope      {printf("Switch case\n");}
-    | PRINT expression 	SEMICOLON	                        {printf("Print\n");}
-    | function_call	     SEMICOLON                                      
-    | RET expression SEMICOLON		{printf("Return value\n");}
-    | RET SEMICOLON		{printf("Return\n");}
+      for_expression ERBRACKET brace_scope			{char c[] = {}; sprintf(c,"%d",$5);$$ = opr(FOR, 4, opr(ASSIGN, 2, getId($3,symbolTable), con(c, 0)), $7, $9, $11);printf("For loop\n");}
+    /* | FOR ORBRACKET INT IDENTIFIER ASSIGN INTEGERNUMBER SEMICOLON 
+      boolean_expression SEMICOLON 
+      for_expression ERBRACKET brace_scope			{printf("why ?");char c[] = {}; sprintf(c,"%d",$6);$$ = opr(FOR, 4, opr(ASSIGN, 2, id(0, $4), con(c, 0)), $8, $10, $12);printf("For loop\n");} */
+    | IF ORBRACKET expression ERBRACKET brace_scope %prec IFX {$$ = opr(IF, 2, $3, $5);printf("If statement\n");}
+    | IF ORBRACKET expression ERBRACKET brace_scope ELSE brace_scope	{$$ = opr(IF, 3, $3, $5, $7);printf("If-else statement\n");}
+    | SWITCH ORBRACKET IDENTIFIER ERBRACKET switch_scope      {$$ = opr(SWITCH, 2, getId($3,symbolTable), $5);printf("Switch case\n");}
+    /* | PRINT expression 	SEMICOLON	                        {printf("Print\n");} */
+    /* | function_call	     SEMICOLON                                       */
+    /* | RET expression SEMICOLON		{printf("Return value\n");} */
+    /* | RET SEMICOLON		{printf("Return\n");} */
     | function 
-    | brace_scope											{printf("New scope\n");} */
+    /* | brace_scope											{printf("New scope\n");}  */
     ;
 
- /* function : 
-    datatype IDENTIFIER ORBRACKET argument_list ERBRACKET OpeningBRACE statement_list ClosingBRACE      {printf("Define function\n");}
-    ; */
+ function : 
+    datatype IDENTIFIER ORBRACKET argument_list ERBRACKET OpeningBRACE statement_list RET expression SEMICOLON ClosingBRACE      { char c[] = {}; sprintf(c,"%d",$1);  $$=opr( RET,3,con(c ,0),$7,$9 ); printf("function\n");printf("Define function\n");}
+    | datatype IDENTIFIER ORBRACKET ERBRACKET OpeningBRACE statement_list RET expression SEMICOLON ClosingBRACE      { char c[] = {}; sprintf(c,"%d",$1);  $$=opr( RET,3,con(c ,0),$6,$8 );printf("Define function\n");}
+    ;
 
 /* function_call : 
     IDENTIFIER ORBRACKET argument_list ERBRACKET  {printf("function call\n");}
     ; */
        
-/* argument_list :  
+argument_list :  
     datatype IDENTIFIER continuation
-    ; */
+    | datatype IDENTIFIER
+    ;
 
-/* continuation :  
+continuation :  
     COMMA datatype IDENTIFIER continuation 
-    ;   */
+    | COMMA datatype IDENTIFIER
+    ;  
            
             
-/* brace_scope: 
-    OpeningBRACE statement_list ClosingBRACE								{printf("Block of statements\n");}
+brace_scope: 
+    OpeningBRACE statement_list ClosingBRACE	{$$ = $2; printf("Block of statements\n");}
     | OpeningBRACE ClosingBRACE	
-    ; */
+    ;
 
 OpeningBRACE: OBRACE {blockLevel++; printf("Block %d\n", blockLevel);};
 ClosingBRACE: EBRACE {printf("End of block %d\n", blockLevel); blockLevel--;};
 
-/* switch_scope:  
-    OpeningBRACE case_expression ClosingBRACE					    {printf("Switch case block\n");}		
-    ; */
+switch_scope:  
+    OpeningBRACE case_expression ClosingBRACE	    {$$ = $2;printf("Switch case block\n");}		
+    ;
         
 statement_list:  
     statement 
-    | statement_list statement ;
+    | statement_list statement  { $$ = opr(SEMICOLON, 2, $1, $2); };
 
 
 arithmetic_expression :   
@@ -158,19 +163,19 @@ arithmetic_expression :
     | IDENTIFIER DECREMENT                 {$$=opr(DECREMENT,1,getId($1, symbolTable));}
     ;
 
-/* increment_statement: 
-    IDENTIFIER INCREMENT                 {$$=opr(INCREMENT,1,$1);}
-    | IDENTIFIER DECREMENT                 {$$=opr(DECREMENT,1,$1);}
-    | IDENTIFIER PEQUAL expression    { $$ = opr(PLUS, 2, $1, $1); }
-    | IDENTIFIER MEQUAL expression    { $$ = opr(MINUS, 2, $1, $1); }
-    | IDENTIFIER MULEQUAL expression  { $$ = opr(MUL, 2, $1, $1); }
-    | IDENTIFIER DIVEQUAL expression  {$$= opr(DIV, 2 ,$1,$1);}
-    ; */
+increment_statement: 
+    IDENTIFIER INCREMENT                 {$$=opr(INCREMENT,1,getId($1, symbolTable));}
+    | IDENTIFIER DECREMENT                 {$$=opr(DECREMENT,1,getId($1, symbolTable));}
+    | IDENTIFIER PEQUAL expression    { $$ = opr(ASSIGN, 2,getId($1, symbolTable), opr(PLUS, 2, getId($1, symbolTable), $3)); }
+    | IDENTIFIER MEQUAL expression    { $$ = opr(ASSIGN, 2,getId($1, symbolTable), opr(MINUS, 2, getId($1, symbolTable), $3)); }
+    | IDENTIFIER MULEQUAL expression  { $$ = opr(ASSIGN, 2,getId($1, symbolTable), opr(MUL, 2, getId($1, symbolTable), $3)); }
+    | IDENTIFIER DIVEQUAL expression  { $$ = opr(ASSIGN, 2,getId($1, symbolTable), opr(DIV, 2, getId($1, symbolTable), $3)); }
+    ;
 
 
-/* for_expression : 
+for_expression : 
     increment_statement                 {$$=$1;}
-    | IDENTIFIER ASSIGN arithmetic_expression ; */
+    | IDENTIFIER ASSIGN arithmetic_expression  {$$ = opr(ASSIGN, 2, getId($1,symbolTable), $3);};;
      
 boolean_expression: 
         expression AND expression   { $$ = opr(AND, 2, $1, $3); }       
@@ -186,7 +191,7 @@ boolean_expression:
             
 value:
     FLOATNUMBER      { char c[] = {}; ftoa($1, c, 6); $$ = con(c, 1); }        
-    | INTEGERNUMBER  { char c[] = {};sprintf(c,"%d",$1); $$ = con(c, 0); }                 
+    | INTEGERNUMBER  { char c[] = {};sprintf(c,"%d",$1); $$ = con(c, 0); printf("Integer\n");}                 
     | CHARACTER { $$ = con($1, 2); }
     | FALSE { $$ = con("false", 4); }
     | TRUE { $$ = con("true", 4); }
@@ -194,16 +199,17 @@ value:
     | IDENTIFIER { $$ = getId($1, symbolTable); } ;
 
 expression: 
-    value
-    | arithmetic_expression
-    | boolean_expression 
+    value { $$ = $1;}
+    | arithmetic_expression { $$ = $1; }
+    | boolean_expression    { $$ = $1; }
     /* | function_call */
-    | ORBRACKET expression ERBRACKET;
+    | ORBRACKET expression ERBRACKET { $$ = $2; }
 
-/* case_expression: 
-    DEFAULT COLON statement_list BREAK SEMICOLON                              
-    | CASE INTEGERNUMBER COLON statement_list BREAK SEMICOLON   case_expression  		
-    ; */
+case_expression: 
+    DEFAULT COLON statement_list BREAK SEMICOLON   { $$ = opr(DEFAULT, 2, $3, opr(BREAK, 0)); }                             
+    | CASE INTEGERNUMBER COLON statement_list BREAK SEMICOLON   case_expression  { char c[] = {}; sprintf(c,"%d",$2); $$ = opr(CASE, 4, con(c, 0), $4, opr(BREAK, 0), $7); }
+    | CASE INTEGERNUMBER COLON statement_list  case_expression  { char c[] = {}; sprintf(c,"%d",$2); $$ = opr(CASE, 3, con(c, 0), $4, $5); }
+    ;
 
 %% 
 
@@ -257,6 +263,7 @@ nodeType * id(int type, char * name)
     p->id.table = symbolTable;
     p->id.node = node;
     p->id.name 	= strdup(name);
+    p->id.type 	= type;
 
     /* p->id.index = index; */
 
@@ -420,36 +427,39 @@ int yyerrorvar(char *s, char *var)
  	exit(0);
 }
 
-int main(void) 
+int main(int argc, char *argv[]) 
 {   
-    printf(":()\n");
-	yyin = fopen("input.txt", "r");
-	f1 = fopen("output.txt","w");
-	f2 = fopen("symbol.txt","w");
-    printf(":(\n");
+    if(argc < 4) {
+        printf("Please provide an input file, output file, and symbol file.\n");
+        return 1;
+    }
+
+    yyin = fopen(argv[1], "r");
+    f1 = fopen(argv[2],"w");
+    f2 = fopen(argv[3],"w");
     symbolTable = createSymbolTable();
-	if(!yyparse())
-	{
-		printf("\nParsing complete\n");
-		
-		printList(symbolTable);
-		
-		/* Print(f2); */
-		/* printNotInit(f2); */
-		
-		fprintf(f2,"-----------------------------------------------\n\n");
-	
-		/* printUsed(f2); */
-		/* printNotUsed(f2); */
-		
-	}
-	else
-	{
-		printf("\nParsing failed\n");
-		return 0;
-	}
-	fclose(f1);
-	fclose(f2);
-	fclose(yyin);
+    if(!yyparse())
+    {
+        printf("\nParsing complete\n");
+        
+        printList(symbolTable);
+        
+        /* Print(f2); */
+        /* printNotInit(f2); */
+        
+        fprintf(f2,"-----------------------------------------------\n\n");
+    
+        /* printUsed(f2); */
+        /* printNotUsed(f2); */
+        
+    }
+    else
+    {
+        printf("\nParsing failed\n");
+        return 0;
+    }
+    fclose(f1);
+    fclose(f2);
+    fclose(yyin);
     return 0;
 }

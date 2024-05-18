@@ -1,0 +1,7 @@
+	 mov R0, 1 
+	 mov y, R0 
+	 func begin 
+	 mov R0, .000000 
+	 mov uu, R0 
+	 mov R0,uu 
+	 func end 

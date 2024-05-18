@@ -1,0 +1,35 @@
+	 mov R0, null 
+	 mov i, R0 
+	 mov R0, 5 
+	 mov i, R0 
+L000:
+	 mov R0,i 
+	 mov R1, 10 
+	 compLESS R2, R0, R1 
+	 jnz	L001
+	 mov R3, false 
+	 mov flag, R3 
+	 mov R0, 1 
+	 mov x, R0 
+	 mov R0,x 
+	 mov R1, 2 
+	 compGREATER R2, R0, R1 
+	jz	L002
+	 mov R3, true 
+	 mov flag, R3 
+	 mov R0,x 
+	 inc R0 
+	 mov x, R0 
+	jmp	L003
+L002:
+	 mov R1, false 
+	 mov flag, R1 
+	 mov R0,x 
+	 dec R0 
+	 mov x, R0 
+L003:
+	 mov R1,i 
+	 inc R1 
+	 mov i, R1 
+	 jmp	L000
+L001:

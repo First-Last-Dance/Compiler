@@ -1,0 +1,28 @@
+	 mov R0, 5 
+	 mov test1, R0 
+	 mov R0, 6 
+	 mov test2, R0 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compGREATER R2, R0, R1 
+	 mov flag, R2 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compLESS R2, R0, R1 
+	 mov flag, R2 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compLE R2, R0, R1 
+	 mov flag, R2 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compGE R2, R0, R1 
+	 mov flag, R2 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compEQ R2, R0, R1 
+	 mov flag, R2 
+	 mov R0,test1 
+	 mov R1,test2 
+	 compNE R2, R0, R1 
+	 mov flag, R2 

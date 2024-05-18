@@ -1,0 +1,10 @@
+bool test = false;
+
+test = true && true;
+
+test = false || true;
+
+test = !test;
+
+test = !test && test;
+

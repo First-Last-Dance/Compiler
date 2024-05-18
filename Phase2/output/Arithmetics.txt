@@ -1,0 +1,116 @@
+	 mov R0, 1 
+	 mov index, R0 
+	 mov R0, 1 
+	 mov R1, 1 
+	 add R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1,index 
+	 add R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 mov R1, 1 
+	 add R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 inc R0 
+	 mov index, R0 
+	 mov R1, 1 
+	 mov R2, 1 
+	 sub R3, R1, R2 
+	 mov index, R3 
+	 mov R0, 1 
+	 mov R1,index 
+	 sub R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 mov R1, 1 
+	 sub R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 dec R0 
+	 mov index, R0 
+	 mov R1, 1 
+	 mov R2, 1 
+	 mul R3, R1, R2 
+	 mov index, R3 
+	 mov R0, 1 
+	 mov R1,index 
+	 mul R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 mov R1, 1 
+	 mul R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1, 1 
+	 div R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1,index 
+	 div R2, R0, R1 
+	 mov index, R2 
+	 mov R0,index 
+	 mov R1, 1 
+	 div R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1, 1 
+	 rem R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1, 1 
+	 power R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 neg R1, R0 
+	 mov index, R1 
+	 mov R0, 1 
+	 neg R1, R0 
+	 mov index, R1 
+	 mov R0, 1 
+	 neg R1, R0 
+	 neg R2, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov index, R0 
+	 mov R0, 1 
+	 mov R1, 2 
+	 add R2, R0, R1 
+	 mov index, R2 
+	 mov R0, 1 
+	 mov R1, 2 
+	 add R2, R0, R1 
+	 mov R3, 3 
+	 add R4, R2, R3 
+	 mov R5, 4 
+	 add R6, R4, R5 
+	 mov index, R6 
+	 mov R0, 1 
+	 mov R1, 2 
+	 add R2, R0, R1 
+	 mov R3, 3 
+	 add R4, R2, R3 
+	 mov R5, 4 
+	 add R6, R4, R5 
+	 mov R7,index 
+	 add R8, R6, R7 
+	 mov index, R8 
+	 mov R0, 1 
+	 mov R1, 2 
+	 add R2, R0, R1 
+	 mov R3, 4 
+	 mov R4, 5 
+	 mov R5, 10 
+	 div R6, R4, R5 
+	 mul R7, R3, R6 
+	 add R8, R2, R7 
+	 mov index, R8 
+	 mov R0,index 
+	 inc R0 
+	 mov index, R0 
+	 mov index, R0 
+	 mov R0,index 
+	 dec R0 
+	 mov index, R0 
+	 mov index, R0 

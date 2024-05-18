@@ -1,0 +1,27 @@
+	 mov R0, true 
+	 mov x, R0 
+	 mov R0, 5 
+	 mov c, R0 
+	 mov R0, 10 
+	 mov a, R0 
+L000:
+	 mov R0,x 
+	 mov R1,c 
+	 mov R2, 3 
+	 compGREATER R3, R1, R2 
+	 and R4, R0, R3 
+	jz	L001
+	 mov R5,c 
+	 mov R6, 2 
+	 mul R7, R5, R6 
+	 mov c, R7 
+	 mov R0,c 
+	 mov R1,a 
+	 compLE R2, R0, R1 
+	jz	L002
+	 mov R3,a 
+	 inc R3 
+	 mov a, R3 
+L002:
+	jmp	L000
+L001:

@@ -34,14 +34,12 @@ int ex(nodeType *p) {
 	int i,j;     // Used as temporary variables 
 	
     if (!p) return 0; // if p = NUll return 0
+	
     switch(p->type) 
 	{
 	case typeCon: 
 		//{ Integer, Float, Char, String, Bool, ConstIntger, ConstFloat, ConstChar, ConstString, ConstBool} 
 		rightType = p->con.type;
-		printf("\nin con");	
-		
-		
 		// if
 		// (
 		// 	( leftType == 5 && ( rightType != 5 && rightType != 0 )) || 											//integer
@@ -91,8 +89,6 @@ int ex(nodeType *p) {
 		{
 			fprintf( f1, "Warning : Assigning character to string\n");
 		}
-
-		printf("\nin con 2\n");
 		
 		fprintf( f1, "\t mov R%01d, %s \n", last,p->con.value);
 		last ++;
@@ -105,10 +101,9 @@ int ex(nodeType *p) {
 		rightType = p->id.type; // store the type of identifier
     	if (oprType!=NULL && strcmp(oprType,strdup("a")) == 0 )
     	{	
-			int index=(int)p->id.index;
+			// int index=(int)p->id.index;
 			struct SymbolTableData * data= getSymbolData(p->id.table, p->id.name);
 			int init=(int)data->symbolInitialized;
-			printf("hi");
     		if (init == 0)
     		{
     			fprintf(f1,"\t WARNING: Variable %s is not initialized\n",p->id.name);	
@@ -123,11 +118,10 @@ int ex(nodeType *p) {
 		//for example if identifier is being used in an expression context rather than being assigned
 		else 
     	{
-			printf("hi there");
        		fprintf( f1, "\t mov R%01d, null \n", last);
 			fprintf( f1, "\t mov %s, R%01d \n", p->id.name, last);
-			counter++;
-			last++;
+			// counter++;
+			// last++;
 		}
         break;
 	// handle arithmetic operations and function calls. 
@@ -165,11 +159,18 @@ int ex(nodeType *p) {
 					fprintf( f1, "\t compEQ R%01d, R%01d, R%01d \n", last, base, counter);
 					fprintf( f1, "\t jnz\tL%03d \n", lbl1 = lbl++); 
 					ex(p->opr.op[1]);
-					ex(p->opr.op[2]);
-					fprintf( f1, "L%03d:\n", lbl1);
-					ex(p->opr.op[3]);
-                    last++;
+					last++;
                     counter++;
+					if(p->opr.nops > 3){
+						ex(p->opr.op[2]);
+						fprintf( f1, "L%03d:\n", lbl1);
+						ex(p->opr.op[3]);
+					}
+					else{
+						ex(p->opr.op[2]);
+					}
+					
+
         break;
 		//********************************Break********************************************			
 	    case BREAK:
@@ -244,7 +245,7 @@ int ex(nodeType *p) {
 			
 	//*********************************FOR**********************************************************
 		case FOR:
-	    
+	    	printf("i am here inside for");
 			ex(p->opr.op[0]);
 		
 			fprintf( f1, "L%03d:\n", lbl1 = lbl++);
@@ -263,14 +264,13 @@ int ex(nodeType *p) {
 		break;
 	 //***********************************ASSIGN*******************************************************		
 		case ASSIGN:
-		printf("i am here");
 			leftType = p->opr.op[0]->id.type;
 			oprType = strdup("a");
 			// permit = p->opr.op[0]->id.per;
 			// Find the symbol table entry for the variable being assigned to
-			struct SymbolTableData * data= getSymbolData(p->opr.op[0]->id.table, p->opr.op[0]->id.name);
+			// struct SymbolTableData * data= getSymbolData(p->opr.op[0]->id.table, p->opr.op[0]->id.name);
 			// Check if the variable is undeclared
-			int init=(int)data->symbolInitialized;
+			// int init=(int)data->symbolInitialized;
 			// if(permit == undeclared) 
 			// {
 			// 	yyerrorvar("Error: %s is not declared",p->opr.op[0]->id.name);
@@ -292,8 +292,6 @@ int ex(nodeType *p) {
 				
 			// setInit(p->opr.op[0]->id.index);
 			ex(p->opr.op[1]);
-			printf("left type %d",leftType);
-			printf("right type %d",rightType);
 			// Check compatibility of types between left and right operands
 			if((leftType == Integer || leftType == ConstIntger) && (rightType == Integer || rightType == ConstIntger  )) {;}
 			else if((leftType == Float || leftType == ConstFloat) && (rightType == Float || rightType == ConstFloat || rightType == Integer || rightType == ConstIntger)) {;}
@@ -301,9 +299,7 @@ int ex(nodeType *p) {
 			else if((leftType == String || leftType == ConstString) && (rightType == String || rightType == ConstString || rightType==Char || rightType==ConstChar)) {;}
 			else if((leftType == Bool || leftType == ConstBool) && (rightType == Bool || rightType == ConstBool || rightType == Integer || rightType == ConstIntger)) {;}
 			else if(leftType != rightType) 
-			{
-				printf("errr");
-				
+			{				
 				yyerror("Error: incompatible types for assignment ");
 				oprType = NULL;
 				break;
@@ -322,7 +318,7 @@ int ex(nodeType *p) {
 				}
                    
 			}
-			else{
+			else if(p->opr.op[1]->type == typeCon){
 				p->opr.op[0]->id.node->data->symbolValue = strdup(p->opr.op[1]->con.value);
 			}
             
@@ -359,18 +355,16 @@ int ex(nodeType *p) {
             ex(p->opr.op[0]);
 			// Generates code to minus the value in the last register
             
-            // fprintf(f1, "\t neg R%01d, R%01d \n", last, counter);
-			// last++;
-			// counter++;
-            generateArithmetic("neg", last, i, j);
+            fprintf(f1, "\t neg R%01d, R%01d \n", last, counter);
+			last++;
+			counter++;
             break;
 			
 	   //******************************************DEFAULT******************************		
         default:
 			oprType = strdup("a");
-            if(p->opr.op[0]->type == typeId && p->opr.op[0]->id.per != undeclared)
+            if(p->opr.op[0]->type == typeId && p->opr.op[0]->id.per != undeclared){;}
 			// setUsed(p->opr.op[0]->id.index);
-                    
 			ex(p->opr.op[0]);
 			
 			i = counter;
@@ -383,9 +377,7 @@ int ex(nodeType *p) {
 				{
 					oprType = strdup("a");
 					// setUsed(p->opr.op[1]->id.index);
-				}
-                            
-						
+				}	
 				ex(p->opr.op[1]);
 				type2 = rightType;
 					
@@ -437,8 +429,28 @@ int ex(nodeType *p) {
 					}
                     oprType = NULL;
 				break;	
-				case DIV:			
-				if( p->opr.op[1]->type ==typeCon && value!=0  &&(type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) && (type2 == Integer || type2 == Float  || type2 == ConstIntger || type2 == ConstFloat)) {
+				case DIV:
+				if(p->opr.op[1]->type == typeCon){
+				value = atoi(p->opr.op[1]->con.value);			
+				}
+				else if(p->opr.op[1]->type == typeId){
+					struct SymbolTableData * data= getSymbolData(p->opr.op[1]->id.table, p->opr.op[1]->id.name);
+					if(data->symbolType == Integer || data->symbolType == ConstIntger){
+						value = atoi(data->symbolValue);
+					}
+					else if(data->symbolType == Float || data->symbolType == ConstFloat){
+						value = atof(data->symbolValue);
+					}
+					else{
+						yyerror("Error: incompatible types for division ");
+					}
+
+
+				}
+				if(value == 0){
+					yyerror("Error: Division by zero ");
+				}
+				if( value!=0  &&(type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) && (type2 == Integer || type2 == Float  || type2 == ConstIntger || type2 == ConstFloat)) {
 					// fprintf( f1, "\t div R%01d, R%01d, R%01d \n", last, i, j);
 					// last ++;
 					// counter++;
@@ -477,10 +489,13 @@ int ex(nodeType *p) {
 				oprType = NULL;
 				break;
 			case NOT:				
-				if((type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) ) 
+				// if((type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) ) 
+				rightType = Bool;
+				if(type1 == Bool || type1 == ConstBool) 
 				{
 					fprintf( f1, "\t not R%01d \n", last-1);
-					last ++;
+					// last ++;
+					// counter++;
 				}
 				else 
 				{
@@ -488,8 +503,9 @@ int ex(nodeType *p) {
 				}
 				oprType = NULL;				
 				break;				
-			case AND:				
-				if((type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) && (type2 == Integer || type2 == Float  || type2 == ConstIntger || type2 == ConstFloat)) {
+			case AND:	
+				rightType = Bool;
+				if((type1 == Bool || type1 == ConstBool) && (type2 == Bool || type2 == ConstBool)) {
 					// fprintf( f1, "\t and R%01d, R%01d, R%01d \n", last, i, j);
 					// last ++;
 					// counter++;
@@ -502,7 +518,10 @@ int ex(nodeType *p) {
 				oprType = NULL;
 				break;				
 			case OR:
-				if((type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) && (type2 == Integer || type2 == Float  || type2 == ConstIntger || type2 == ConstFloat)) {
+				rightType = Bool;
+				// if((type1 == Integer || type1 == Float || type1 == ConstIntger || type1 == ConstFloat) && (type2 == Integer || type2 == Float  || type2 == ConstIntger || type2 == ConstFloat))
+				if((type1 == Bool || type1 == ConstBool) && (type2 == Bool || type2 == ConstBool)) 
+				 {
 					// fprintf( f1, "\t or R%01d, R%01d, R%01d \n", last, i, j);
 					// last ++;
 					// counter++;
@@ -632,18 +651,38 @@ int ex(nodeType *p) {
 				{
 					fprintf( f1, "\t inc R%01d \n", last-1);
 					fprintf( f1, "\t mov %s, R%01d \n", p->opr.op[0]->id.name, last - 1);
+					// last--;
+					// counter--;
 				}
 				else 
 				{
 					yyerror("Error: incompatible operands for increment");
 				}
 				oprType = NULL;
+				if(!p->opr.op[0]->id.node->data->symbolInitialized){
+					yyerror("Error: Left hand side of assignment is not initialized");
+					break;
+				}
+				if(p->opr.op[0]->id.node->data->symbolType == Integer){
+					char buffer[50]; // Buffer to hold the string representation of the number
+					int tempValue = atoi(p->opr.op[0]->id.node->data->symbolValue) + 1; // Convert the string to an integer and increment it
+					sprintf(buffer, "%d", tempValue); // Convert the incremented integer back to a string
+					p->opr.op[0]->id.node->data->symbolValue = strdup(buffer);
+					} // Duplicate the string and store it				}
+				else if(p->opr.op[0]->id.node->data->symbolType == Float){
+					char buffer[50]; // Buffer to hold the string representation of the number
+					float tempValue = atof(p->opr.op[0]->id.node->data->symbolValue) + 1; // Convert the string to a double and increment it
+					sprintf(buffer, "%f", tempValue); // Convert the incremented double back to a string
+					p->opr.op[0]->id.node->data->symbolValue = strdup(buffer); // Duplicate the string and store it
+				}
 				break;
 			case DECREMENT:
 				if(type1 == Integer || type1 == Float) 
 				{
 					fprintf( f1, "\t dec R%01d \n", last-1);
 					fprintf( f1, "\t mov %s, R%01d \n", p->opr.op[0]->id.name, last - 1);
+					// last--;
+					// counter--;
 				}
 				else 
 				{

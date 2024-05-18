@@ -1,0 +1,5 @@
+int test1 = 1;
+bool test2 = false;
+char test3 = 'A';
+string test4 = "Amr";
+float test5 = 3.14;

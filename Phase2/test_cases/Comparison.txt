@@ -1,0 +1,14 @@
+int test1 = 5;
+int test2 = 6;
+
+bool flag = test1 > test2;
+
+flag = test1 < test2;
+
+flag = test1 <= test2;
+
+flag = test1 >= test2;
+
+flag = test1 == test2;
+
+flag = test1 != test2;

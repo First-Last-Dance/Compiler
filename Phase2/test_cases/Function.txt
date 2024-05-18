@@ -1,0 +1,6 @@
+int y = 1;
+float f ()
+{
+    float uu=0.0;
+    return uu;
+}

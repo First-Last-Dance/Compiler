@@ -1,0 +1,27 @@
+	 mov R0, 1 
+	 mov x, R0 
+	 mov R0, null 
+	 mov y, R0 
+	 mov R0,x 
+	 mov R1, 1 
+	 compEQ R2, R0, R1 
+	 jnz	L000 
+	 mov R2, 0 
+	 mov x, R2 
+	 jmp Label0 
+L000:
+	 mov R1, 2 
+	 compEQ R2, R0, R1 
+	 jnz	L001 
+	 mov R2, 2 
+	 mov y, R2 
+	 mov R1, 3 
+	 compEQ R2, R0, R1 
+	 jnz	L002 
+	 mov R2, 5 
+	 mov y, R2 
+	 jmp Label0 
+L002:
+	 mov R1, 0 
+	 mov y, R1 
+Label0: 
