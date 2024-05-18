@@ -264,7 +264,6 @@ int ex(nodeType *p) {
 		break;
 	 //***********************************ASSIGN*******************************************************		
 		case ASSIGN:
-			printf("lol");
 			leftType = p->opr.op[0]->id.type;
 			oprType = strdup("a");
 			if(p->opr.op[0]->id.node->data->symbolInitialized == true){

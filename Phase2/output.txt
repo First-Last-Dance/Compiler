@@ -1,2 +1,2 @@
 Syntax Error Could not parse quadruples
-line number : 3 Error: left operands must be a modifiable expression
+line number : 0 syntax error
